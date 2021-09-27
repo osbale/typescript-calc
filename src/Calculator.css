@@ -1,0 +1,25 @@
+.calculator {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 400px;
+}
+
+.calculator__form {
+  display: grid;
+  grid-template-columns: 1fr;
+}
+
+.calculator__form input {
+  padding: 10px 5px;
+}
+
+.calculator__operations {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr 1fr;
+}
+
+.calculator__operations > button {
+  padding: 10px 5px;
+}
