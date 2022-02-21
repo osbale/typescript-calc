@@ -1,89 +1,55 @@
 import React, { useState } from "react";
-import "./Calculator.css";
+import styles from "./Calculator.module.css";
+
+const operations = ["+", "-", "*", "/"];
 
 export const Calculator = () => {
-  const [input, setInput] = useState("");
-  const [result, setResult] = useState("0");
-
-  const stringInput = (
-    inputString: string,
-    e: React.MouseEvent<HTMLElement>
-  ) => {
-    e.preventDefault();
-    switch (inputString) {
-      case "0":
-      case "1":
-        setInput(input + inputString);
-        break;
-      case "+":
-      case "-":
-      case "*":
-      case "/":
-        if (
-          input[input.length - 1] !== "+" &&
-          input[input.length - 1] !== "-" &&
-          input[input.length - 1] !== "*" &&
-          input[input.length - 1] !== "/" &&
-          input.length
-        )
-          setInput(input + inputString);
-        break;
-      case "C":
-        setInput("");
-        break;
-      default:
-        break;
-    }
-  };
+  const [inp, setInp] = useState("");
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
-    const arrayOfOperations = ["+", "-", "/", "*"].includes(
-      input[input.length - 1]
-    )
-      ? input.substring(0, input.length - 1).split(/(\+|-|\/|\*)/g)
-      : input.split(/(\+|-|\/|\*)/g);
-
-    let sum = 0;
-    for (let i = 0; i < arrayOfOperations.length; i++) {
-      if (i === 0) {
-        sum = parseInt(arrayOfOperations[i]);
-        continue;
+    operations.forEach((op) => {
+      if (inp.indexOf(op) !== -1) {
+        const numbers = inp.split(op);
+        const x = parseInt(numbers[0], 2);
+        const y = parseInt(numbers[1], 2);
+        const sum = x + y;
+        setInp(sum.toString(2));
       }
-      if (arrayOfOperations[i] === "+")
-        sum += parseInt(arrayOfOperations[i + 1]);
-      else if (arrayOfOperations[i] === "-")
-        sum -= parseInt(arrayOfOperations[i + 1]);
-      else if (arrayOfOperations[i] === "/")
-        sum /= parseInt(arrayOfOperations[i + 1]);
-      else if (arrayOfOperations[i] === "*")
-        sum *= parseInt(arrayOfOperations[i + 1]);
-      i++;
-    }
+    });
+  };
 
-    setInput("");
-    setResult(sum.toString());
+  const onClick = (e: React.MouseEvent<HTMLElement>) => {
+    e.preventDefault();
+    const value = (e.target as HTMLInputElement).value;
+    setInp((inp) => (inp += value));
+  };
+
+  const clear = (e: React.MouseEvent<HTMLElement>) => {
+    e.preventDefault();
+    setInp("");
   };
 
   return (
-    <div className="calculator">
-      <div className="calculator__wrapper">
-        <form
-          action=""
-          className="calculator__form"
-          onSubmit={(e) => handleSubmit(e)}
-        >
-          <input type="text" value={input} placeholder={result} />
-          <div className="calculator__operations">
-            <button onClick={(e) => stringInput("0", e)}>0</button>
-            <button onClick={(e) => stringInput("1", e)}>1</button>
-            <button onClick={(e) => stringInput("C", e)}>C</button>
-            <button>=</button>
-            <button onClick={(e) => stringInput("+", e)}>+</button>
-            <button onClick={(e) => stringInput("-", e)}>-</button>
-            <button onClick={(e) => stringInput("*", e)}>*</button>
-            <button onClick={(e) => stringInput("/", e)}>/</button>
+    <div className={styles.calculator}>
+      <div className={styles.calculator__wrapper}>
+        <form className={styles.calculator__form} onSubmit={handleSubmit}>
+          <input readOnly type="text" value={inp} placeholder="binary" />
+          <div className={styles.calculator__operations}>
+            <button value={0} onClick={onClick}>
+              0
+            </button>
+            <button value={1} onClick={onClick}>
+              1
+            </button>
+            <button onClick={clear}>C</button>
+            <button type="submit">=</button>
+            {operations.map((op) => (
+              <button key={op} value={op} onClick={onClick}>
+                {op}
+              </button>
+            ))}
           </div>
         </form>
       </div>
